@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: ramanaredd/flask-backend:1.0
+    container_name: flask-backend
+    restart: unless-stopped
+    expose:
+      - "5000"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    image: ramanaredd/express-frontend:1.0
+    container_name: express-frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:5000
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
